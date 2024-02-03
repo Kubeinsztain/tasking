@@ -14,10 +14,11 @@ export const NavBar = () => {
         <Button
           size='sm'
           className='rounded-sm hidden md:block h-auto py-1.5 px-2'
+          variant='primary'
         >
           Create
         </Button>
-        <Button className='rounded-sm block md:hidden'>
+        <Button className='rounded-sm block md:hidden' variant='primary'>
           <Plus className='h-4 w-4' />
         </Button>
       </div>

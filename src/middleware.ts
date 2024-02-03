@@ -8,7 +8,7 @@ export default authMiddleware({
   publicRoutes: ['/'],
   afterAuth(auth, req) {
     if (auth.userId && auth.isPublicRoute) {
-      const path = auth.orgId ? `/organizations/${auth.orgId}` : '/select-org';
+      const path = auth.orgId ? `/organization/${auth.orgId}` : '/select-org';
 
       const orgSelection = new URL(path, req.url);
       return NextResponse.redirect(orgSelection);

@@ -30,6 +30,7 @@ export const FormSubmit = ({
 
   return (
     <Button
+      className={cn(className)}
       disabled={pending || disabled}
       type='submit'
       variant={variant}

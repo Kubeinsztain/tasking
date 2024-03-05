@@ -33,7 +33,7 @@ export const BoardOptions = ({ id }: BoardOptionsProps) => {
   return (
     <div>
       <Popover>
-        <PopoverTrigger>
+        <PopoverTrigger asChild>
           <Button className='h-auto w-auto p-2' variant='transparent'>
             <MoreHorizontal className='h-5 w-5' />
           </Button>
@@ -56,7 +56,7 @@ export const BoardOptions = ({ id }: BoardOptionsProps) => {
             disabled={isDeletePending}
             className='rounded-none w-full h-auto p-2 px-5 justify-start font-normal text-sm'
           >
-            <Trash2 className='w-4 h-4 mx-2' />
+            <Trash2 className='w-4 h-4 mr-2' />
             Delete this board
           </Button>
         </PopoverContent>

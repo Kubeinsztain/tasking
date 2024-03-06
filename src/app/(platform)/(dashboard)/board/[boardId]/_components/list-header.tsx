@@ -7,6 +7,7 @@ import { List } from '@prisma/client';
 import { ElementRef, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { useEventListener } from 'usehooks-ts';
+import { ListOptions } from './list-options';
 
 type ListHeaderProps = {
   data: List;
@@ -76,7 +77,7 @@ export const ListHeader = ({ data }: ListHeaderProps) => {
             ref={inputRef}
             onBlur={onBlur}
             id='title'
-            placeholder='Enter list title..'
+            placeholder='Enter list title...'
             defaultValue={title}
             className='text-sm px-[7px] py-1 h-7 font-medium border-transparent hover:border-input focus:border-input transition truncate bg-transparent focus:bg-white'
           />
@@ -89,6 +90,7 @@ export const ListHeader = ({ data }: ListHeaderProps) => {
           {title}
         </div>
       )}
+      <ListOptions data={data} onAddCard={() => {}} />
     </div>
   );
 };

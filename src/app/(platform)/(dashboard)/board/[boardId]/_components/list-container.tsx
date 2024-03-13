@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { ListForm } from './list-form';
 import { ListItem } from './list-item';
 import { toast } from 'sonner';
+import { updateCardOrder } from '@/actions/update-card-order';
 
 type ListContainerProps = {
   boardId: string;
@@ -27,7 +28,16 @@ export const ListContainer = ({ boardId, data }: ListContainerProps) => {
 
   const { execute: executeUpdateListOrder } = useAction(updateListOrder, {
     onSuccess: () => {
-      toast.success('List reordered');
+      toast.success('Lists order saved');
+    },
+    onError: (error) => {
+      toast.error(error);
+    },
+  });
+
+  const { execute: executeUpdateCardOrder } = useAction(updateCardOrder, {
+    onSuccess: () => {
+      toast.success('Cards order saved');
     },
     onError: (error) => {
       toast.error(error);
@@ -61,7 +71,6 @@ export const ListContainer = ({ boardId, data }: ListContainerProps) => {
 
       setOrderedData(items);
       executeUpdateListOrder({ items, boardId });
-      // TODO: Trigger Server Action
     }
 
     // If user moves a card
@@ -97,11 +106,13 @@ export const ListContainer = ({ boardId, data }: ListContainerProps) => {
           source.index,
           destination.index
         );
-        reorderedCards.forEach((card, index) => card.order === index);
+        reorderedCards.forEach((card, index) => {
+          card.order = index;
+        });
         sourceList.cards = reorderedCards;
 
         setOrderedData(newOrderedData);
-        // TODO: Trigger Server Action
+        executeUpdateCardOrder({ items: reorderedCards, boardId });
 
         // If user moves the card to another list
       } else {
@@ -115,13 +126,17 @@ export const ListContainer = ({ boardId, data }: ListContainerProps) => {
         destList.cards.splice(destination.index, 0, movedCard);
 
         // Change the order of the cards
-        sourceList.cards.forEach((card, index) => (card.order = index));
+        sourceList.cards.forEach((card, index) => {
+          card.order = index;
+        });
 
         // Update the order for each card in the destination list
-        destList.cards.forEach((card, index) => (card.order = index));
+        destList.cards.forEach((card, index) => {
+          card.order = index;
+        });
 
         setOrderedData(newOrderedData);
-        // TODO: Trigger Server Action
+        executeUpdateCardOrder({ items: destList.cards, boardId });
       }
     }
   };

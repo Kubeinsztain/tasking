@@ -1,19 +1,29 @@
 'use server';
 
-import { db } from '@/lib/db';
-import { auth } from '@clerk/nextjs';
-import { InputType, OutputType } from './types';
-import { revalidatePath } from 'next/cache';
-import { createSafeAction } from '@/lib/create-safe-action';
-import { CreateBoard } from './schema';
 import { createAuditLog } from '@/lib/create-audit-log';
+import { createSafeAction } from '@/lib/create-safe-action';
+import { db } from '@/lib/db';
+import { incrementBoardCount, isWithinLimit } from '@/lib/org-limit';
+import { auth } from '@clerk/nextjs';
 import { ACTION, ENTITY_TYPE } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
+import { CreateBoard } from './schema';
+import { InputType, OutputType } from './types';
 
 const handler = async (data: InputType): Promise<OutputType> => {
   const { userId, orgId } = auth();
 
   if (!userId || !orgId) {
     return { error: 'Unauthorized' };
+  }
+
+  const canCreate = await isWithinLimit();
+
+  if (!canCreate) {
+    return {
+      error:
+        'You have reached the limit of free boards for this organization. Upgrade to create more boards.',
+    };
   }
 
   const { title, image } = data;
@@ -45,6 +55,8 @@ const handler = async (data: InputType): Promise<OutputType> => {
         imageLinkHtml,
       },
     });
+
+    await incrementBoardCount();
 
     await createAuditLog({
       entityId: board.id,

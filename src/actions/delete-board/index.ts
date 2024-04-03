@@ -9,6 +9,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { DeleteBoard } from './schema';
 import { InputType, ReturnType } from './types';
+import { decreaseBoardCount } from '@/lib/org-limit';
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId, orgId } = auth();
@@ -28,6 +29,8 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         orgId,
       },
     });
+
+    await decreaseBoardCount();
 
     await createAuditLog({
       entityId: board.id,
